@@ -62,7 +62,7 @@ export default function MyIp() {
         onClick={logOut}
       >
         {" "}
-        Sign in
+        Sign Out
       </button>
       <div classname="mapDesign">
         <MapContainer center={[lati, lngi]} zoom={13} scrollWheelZoom={false}>
