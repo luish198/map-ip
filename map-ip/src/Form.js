@@ -13,11 +13,24 @@ import MyIp from "./MyIp";
 import { useHistory } from "react-router-dom";
 //import { map } from "jquery";
 
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(console.log);
+
+
+/*if (navigator.geolocation) {
+
+  //navigator.geolocation.getCurrentPosition(console.log);
+  navigator.geolocation.getCurrentPosition(
+
+  function(position) {
+    console.log("Latitude is :", position.coords.latitude);
+    console.log("Longitude is :", position.coords.longitude);
+  })
+
+
 } else {
   alert("permission not granted or geolocation not available");
-}
+}*/
+
+
 
 export default function App() {
   const [email, setEmail] = useState();
@@ -26,8 +39,9 @@ export default function App() {
   const [status, setStatus] = useState(false);
   const [logtry, setLogtry] = useState(0);
   const [newPath, setNewPath] = useState("/");
-
   const history = useHistory();
+
+  
 
   useEffect(() => {
     fetch(
@@ -81,7 +95,7 @@ export default function App() {
 
             <main className="form-signin">
               <form>
-              <img
+                <img
                   className="d-flex justify-content-center"
                   //className="mb-4"
                   src={'./map.jpg'}
@@ -89,7 +103,7 @@ export default function App() {
                   width="72"
                   height="57"
                 />
-                
+
                 <h1 className="h3 mb-3 fw-normal">
                   Please sign in to use the app
                 </h1>

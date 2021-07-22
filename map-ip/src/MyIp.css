@@ -19,6 +19,12 @@
     padding: 15px;
   }
   
+  .box4 {
+    background-color: lightgray;
+    width: 300px;
+    margin: 15px;
+    padding: 15px;
+  }
   .result-container {
     display: flex;
     flex-wrap: wrap;

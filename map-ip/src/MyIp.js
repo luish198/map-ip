@@ -13,14 +13,44 @@ import markerIconPng from "leaflet/dist/images/marker-icon.png";
 import { Icon } from "leaflet";
 import "./MyIp.css";
 import { useHistory } from "react-router-dom";
+import Flag from './Flag'
 
 //https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png
 
 export default function MyIp() {
   const [myIpData, setMyIpData] = useState();
+  const [myCountryData, setMyCountryData] = useState();
+
   const [newPath, setNewPath] = useState("/MyIp");
   const [lati, setLati] = useState(48.0);
   const [lngi, setLngi] = useState(9.0);
+  const [country, setCountry] = useState("DE");
+
+
+  const [lat2, setLat2] = useState(null);
+  const [lng2, setLng2] = useState(null);
+  const [status2, setStatus2] = useState(null);
+
+  const getLocation = () => {
+    if (!navigator.geolocation) {
+      setStatus2('Geolocation is not supported by your browser');
+    } else {
+      setStatus2('Locating...');
+      navigator.geolocation.getCurrentPosition((position) => {
+        setStatus2(null);
+        setLat2(position.coords.latitude);
+        setLng2(position.coords.longitude);
+        console.log("asfasjfasdfa...."+lat2)
+        console.log("asfasjfasdfa...."+lng2)
+
+      }, () => {
+        setStatus2('Unable to retrieve your location');
+      });
+    }
+  }
+
+  
+
 
   const APP_KEY = "at_PcpjPN0AusyD21M6FDFuDEpaBZnfs";
 
@@ -28,7 +58,14 @@ export default function MyIp() {
     fetch(`https://geo.ipify.org/api/v1?apiKey=${APP_KEY}`)
       .then((response) => response.json())
       .then((response) => setMyIpData(response));
+
+      getLocation()
+      
   }, []);
+
+
+  
+
 
   //console.log(myIpData.location.country);
   if (myIpData) {
@@ -37,6 +74,23 @@ export default function MyIp() {
     console.log(myIpData.location.timezone);
     console.log(myIpData.location.lat);
     console.log(myIpData.location.lng);
+    
+  }
+
+  useEffect(() => {
+    fetch(`https://restcountries.eu/rest/v2/alpha/${country}`)
+      .then((response) => response.json())
+      .then((response) => setMyCountryData(response));
+  }, []);  
+
+  if (myCountryData) {
+    console.log(myCountryData);
+    console.log(myCountryData.capital);
+    console.log(myCountryData.flag);
+    //console.log(myCountryData.location.timezone);
+    //console.log(myCountryData.location.lat);
+    //console.log(myCountryData.location.lng);
+    
   }
 
   useEffect(() => {
@@ -65,14 +119,14 @@ export default function MyIp() {
         Sign Out
       </button>
       <div classname="mapDesign">
-        <MapContainer center={[lati, lngi]} zoom={13} scrollWheelZoom={false}>
+        <MapContainer center={[lat2, lng2]} zoom={13} scrollWheelZoom={false}>
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
           <Marker
-            position={[lati, lngi]}
+            position={[lat2, lng2]}
             icon={
               new Icon({
                 iconUrl:
@@ -104,12 +158,19 @@ export default function MyIp() {
                 searchResult={myIpData.location.country}
                 searchResult2={myIpData.location.region}
                 searchResult3={myIpData.location.city}
+                searchResult4={myCountryData.capital}
               />
             </div>
             <div className="box3">
               <Result
                 heading={"Timezone"}
                 searchResult={"UTC" + myIpData?.location?.timezone}
+              />
+            </div>
+            <div className="box4">
+              <Flag
+                heading={"flag"}
+                searchResult={myCountryData.flag}
               />
             </div>
           </div>
