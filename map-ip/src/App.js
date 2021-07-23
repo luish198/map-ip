@@ -7,6 +7,7 @@ import Form from "./Form";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import MyIp from "./MyIp";
+import MoreInfo from "./MoreInfo";
 
 export default function App() {
   //const [myIpData, setMyIpData] = useState();
@@ -30,6 +31,9 @@ export default function App() {
   return (
     <>
       <Switch>
+      <Route exact path="/MoreInfo">
+          <MoreInfo />
+        </Route>
         <Route exact path="/MyIp">
           <MyIp />
         </Route>

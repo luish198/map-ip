@@ -96,7 +96,7 @@ export default function App() {
             <main className="form-signin">
               <form>
                 <img
-                  className="d-flex justify-content-center"
+                  className="d-flex justify-content-center imgstart"
                   //className="mb-4"
                   src={'./map.jpg'}
                   alt=""

@@ -69,10 +69,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-inline-start: 170px;
+    /*margin-inline-start: 170px;*/
   }
   
   .test {
     background-color: red;
+  }
+
+  .imgstart{
+    margin-inline-start: 170px;
   }
   

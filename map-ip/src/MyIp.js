@@ -14,6 +14,13 @@ import { Icon } from "leaflet";
 import "./MyIp.css";
 import { useHistory } from "react-router-dom";
 import Flag from './Flag'
+import { Container, Row, Col } from 'reactstrap';
+import {
+  Card, CardImg, CardText, CardBody,
+  CardTitle, CardSubtitle, Button
+} from 'reactstrap';
+import MoreInfo from "./MoreInfo"
+
 
 //https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png
 
@@ -25,23 +32,49 @@ export default function MyIp() {
   const [lati, setLati] = useState(48.0);
   const [lngi, setLngi] = useState(9.0);
   const [country, setCountry] = useState("DE");
+  const [city, setCity] = useState("");
+
 
 
   const [lat2, setLat2] = useState(null);
   const [lng2, setLng2] = useState(null);
   const [status2, setStatus2] = useState(null);
 
+  /*useEffect(() => {
+      if (!navigator.geolocation) {
+        setStatus2('Geolocation is not supported by your browser');
+      } else {
+        setStatus2('Locating...');
+        
+        navigator.geolocation.getCurrentPosition((position) => {
+          setStatus2(null);
+          setLat2(position.coords.latitude);
+          setLng2(position.coords.longitude);
+          console.log("latitude from GEO...." + lat2)
+          console.log("Longitud from GEO...." + lng2)
+          
+  
+        }, () => {
+          setStatus2('Unable to retrieve your location');
+        });
+      }
+    }
+
+  , []);*/
+
   const getLocation = () => {
     if (!navigator.geolocation) {
       setStatus2('Geolocation is not supported by your browser');
     } else {
       setStatus2('Locating...');
+
       navigator.geolocation.getCurrentPosition((position) => {
         setStatus2(null);
         setLat2(position.coords.latitude);
         setLng2(position.coords.longitude);
-        console.log("asfasjfasdfa...."+lat2)
-        console.log("asfasjfasdfa...."+lng2)
+        console.log("latitude from GEO...." + lat2)
+        console.log("Longitud from GEO...." + lng2)
+
 
       }, () => {
         setStatus2('Unable to retrieve your location');
@@ -49,22 +82,46 @@ export default function MyIp() {
     }
   }
 
-  
 
 
-  const APP_KEY = "at_PcpjPN0AusyD21M6FDFuDEpaBZnfs";
+
+  //const APP_KEY = "at_PcpjPN0AusyD21M6FDFuDEpaBZnfs";
+  const API_KEY = "at_wVezeLIbx0YPQdAeswzAKGKWKE6md"
+  //const API_KEY = process.env.REACT_APP_GEO_API_KEY;
+
+
+  console.log("this is my env...." + API_KEY)
+
+
 
   useEffect(() => {
-    fetch(`https://geo.ipify.org/api/v1?apiKey=${APP_KEY}`)
+    fetch(`https://geo.ipify.org/api/v1?apiKey=${API_KEY}`)
       .then((response) => response.json())
       .then((response) => setMyIpData(response));
 
-      getLocation()
-      
+    getLocation()
+
+  }, []);
+
+  useEffect(() => {
+    fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat2}&longitude=${lng2}&localityLanguage=en`)
+      .then((response) => response.json())
+      .then((response) => setCity(response));
+
+    console.log("city...." + city.locality)
+    console.log("city...." + city.principalSubdivision)
+    console.log("city...." + city.countryName)
+
+
+
   }, []);
 
 
-  
+
+
+
+
+
 
 
   //console.log(myIpData.location.country);
@@ -74,14 +131,14 @@ export default function MyIp() {
     console.log(myIpData.location.timezone);
     console.log(myIpData.location.lat);
     console.log(myIpData.location.lng);
-    
+
   }
 
   useEffect(() => {
     fetch(`https://restcountries.eu/rest/v2/alpha/${country}`)
       .then((response) => response.json())
       .then((response) => setMyCountryData(response));
-  }, []);  
+  }, []);
 
   if (myCountryData) {
     console.log(myCountryData);
@@ -90,7 +147,7 @@ export default function MyIp() {
     //console.log(myCountryData.location.timezone);
     //console.log(myCountryData.location.lat);
     //console.log(myCountryData.location.lng);
-    
+
   }
 
   useEffect(() => {
@@ -106,7 +163,7 @@ export default function MyIp() {
     history.push("/");
   };
 
-  return myIpData ? (
+  return myIpData && lat2 && lng2 ? (
     <>
       <h1 className="IpHeader">Enis + Luis IP finder</h1>
 
@@ -118,62 +175,68 @@ export default function MyIp() {
         {" "}
         Sign Out
       </button>
-      <div classname="mapDesign">
-        <MapContainer center={[lat2, lng2]} zoom={13} scrollWheelZoom={false}>
-          <TileLayer
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
 
-          <Marker
-            position={[lat2, lng2]}
-            icon={
-              new Icon({
-                iconUrl:
-                  "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-                iconSize: [25, 41],
-                iconAnchor: [12, 41]
-              })
-            }
-          >
-            <Popup>
-              Your current location... <br /> here.
-            </Popup>
-          </Marker>
-        </MapContainer>
-      </div>
+
+      <Container fluid="md">
+        <Row>
+          <Col >...</Col>
+        </Row>
+        <Row>
+          <Col >
+            <div classname="mapDesign">
+              <MapContainer center={[lat2, lng2]} zoom={13} scrollWheelZoom={false}>
+                <TileLayer
+                  attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+
+                <Marker
+                  position={[lat2, lng2]}
+                  icon={
+                    new Icon({
+                      iconUrl:
+                        "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+                      iconSize: [25, 41],
+                      iconAnchor: [12, 41]
+                    })
+                  }
+                >
+                  <Popup>
+                    Your current location... <br /> here.
+                  </Popup>
+                </Marker>
+              </MapContainer>
+
+            </div>
+          </Col>
+          <Col >
+            <Flag
+              heading={"flag"}
+              searchResult={myCountryData.flag}
+              searchResult2={myIpData?.ip}
+              searchResult3={city?.locality}
+              searchResult4={city?.principalSubdivision}
+              searchResult5={city?.countryName}
+              searchResult6={city}
+              searchResult7={myCountryData}
+              searchResult8={myIpData}
+
+
+            />
+          </Col>
+        </Row>
+      </Container>
+
+
+
+
       <div>
         <div className="container">
           <div className="input-section">
-            <h1 className="header"> IP Address Tracker</h1>
+            <h1 className="header"> ...</h1>
           </div>
 
-          <div className="result-container">
-            <div className="box1">
-              <Result heading={"IP Address"} searchResult={myIpData?.ip} />
-            </div>
-            <div className="box2">
-              <Location
-                heading={"Location"}
-                searchResult={myIpData.location.country}
-                searchResult2={myIpData.location.region}
-                searchResult3={myIpData.location.city}
-                searchResult4={myCountryData.capital}
-              />
-            </div>
-            <div className="box3">
-              <Result
-                heading={"Timezone"}
-                searchResult={"UTC" + myIpData?.location?.timezone}
-              />
-            </div>
-            <div className="box4">
-              <Flag
-                heading={"flag"}
-                searchResult={myCountryData.flag}
-              />
-            </div>
-          </div>
+          
         </div>
       </div>
       <div className="modal-body p-0 h-100">
@@ -241,3 +304,10 @@ export default function MyIp() {
         {" "}
         Sign Out
       </Link>*/
+
+/*<div className="">
+              <Flag
+                heading={"flag"}
+                searchResult={myCountryData.flag}
+              />
+            </div>*/
